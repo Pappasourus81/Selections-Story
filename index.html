@@ -1,0 +1,616 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>The Quest for Knowledge: Doors of Decisions</title>
+  <style>
+    :root{
+      --bg:#0b1220;
+      --panel:#0f1a33;
+      --panel2:#0c1630;
+      --text:#e7eefc;
+      --muted:#a8b5d6;
+      --accent:#7dd3fc;
+      --good:#86efac;
+      --bad:#fca5a5;
+      --border:rgba(255,255,255,0.12);
+      --shadow: 0 10px 30px rgba(0,0,0,0.35);
+      --radius:16px;
+      --focus: 0 0 0 3px rgba(125,211,252,0.25);
+      font-synthesis-weight: none;
+    }
+
+    * { box-sizing: border-box; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Helvetica Neue";
+      background: radial-gradient(1200px 700px at 20% 10%, rgba(125,211,252,0.12), transparent 60%),
+                  radial-gradient(900px 600px at 80% 30%, rgba(134,239,172,0.10), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+      padding:18px;
+    }
+
+    .wrap{
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .title{
+      display:flex;
+      gap:14px;
+      align-items:flex-start;
+      margin-bottom: 14px;
+    }
+
+    .badge{
+      flex:0 0 auto;
+      width:44px;
+      height:44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(125,211,252,0.25), rgba(134,239,172,0.20));
+      border:1px solid var(--border);
+      box-shadow: var(--shadow);
+      display:grid;
+      place-items:center;
+      font-size: 22px;
+    }
+
+    h1{
+      margin:0;
+      font-size: 20px;
+      letter-spacing: 0.2px;
+    }
+    .subtitle{
+      margin:6px 0 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+      border:1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+
+    .card-header{
+      padding: 14px 16px;
+      background: rgba(255,255,255,0.02);
+      border-bottom:1px solid var(--border);
+      display:flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .progress{
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .card-body{
+      padding: 16px;
+    }
+
+    .story{
+      background: rgba(0,0,0,0.18);
+      border:1px solid rgba(255,255,255,0.10);
+      border-radius: 14px;
+      padding: 12px 12px;
+      line-height: 1.45;
+      color: var(--text);
+    }
+
+    .step{
+      margin-top: 14px;
+      padding: 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.02);
+    }
+
+    .step-title{
+      margin:0 0 8px 0;
+      font-size: 14px;
+      color: var(--accent);
+      letter-spacing: 0.2px;
+    }
+
+    .row{
+      display:flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    button{
+      border:1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.06);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 12px;
+      cursor:pointer;
+      transition: transform 0.06s ease, background 0.15s ease, border-color 0.15s ease;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+    }
+    button:hover{ background: rgba(255,255,255,0.10); }
+    button:active{ transform: translateY(1px); }
+    button:focus{ outline:none; box-shadow: var(--focus); }
+
+    .primary{
+      background: rgba(125,211,252,0.18);
+      border-color: rgba(125,211,252,0.35);
+    }
+
+    input[type="number"],
+    input[type="text"],
+    input[type="password"]{
+      background: rgba(0,0,0,0.22);
+      border:1px solid rgba(255,255,255,0.16);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 12px;
+      width: 240px;
+      max-width: 100%;
+    }
+    input:focus{ outline:none; box-shadow: var(--focus); }
+
+    label{
+      display:flex;
+      align-items:center;
+      gap: 8px;
+      color: var(--text);
+      font-size: 14px;
+      background: rgba(0,0,0,0.14);
+      border:1px solid rgba(255,255,255,0.10);
+      padding: 10px 12px;
+      border-radius: 12px;
+      user-select:none;
+    }
+
+    .hint{
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .msg{
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border:1px solid rgba(255,255,255,0.10);
+      background: rgba(0,0,0,0.18);
+      color: var(--muted);
+      line-height: 1.4;
+      min-height: 44px;
+      display:flex;
+      align-items:center;
+      gap: 10px;
+    }
+    .msg.good{
+      border-color: rgba(134,239,172,0.35);
+      background: rgba(134,239,172,0.10);
+      color: var(--text);
+    }
+    .msg.bad{
+      border-color: rgba(252,165,165,0.35);
+      background: rgba(252,165,165,0.08);
+      color: var(--text);
+    }
+    .msg .icon{
+      width: 22px;
+      text-align:center;
+      flex: 0 0 auto;
+    }
+
+    .locked{
+      opacity: 0.45;
+      filter: grayscale(0.2);
+      pointer-events: none;
+    }
+
+    .footer{
+      margin-top: 14px;
+      display:flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .tiny{
+      font-size: 11px;
+      color: rgba(168,181,214,0.85);
+    }
+
+    .shake{
+      animation: shake 0.22s linear 1;
+    }
+    @keyframes shake{
+      0%{ transform: translateX(0); }
+      25%{ transform: translateX(-3px); }
+      50%{ transform: translateX(3px); }
+      75%{ transform: translateX(-2px); }
+      100%{ transform: translateX(0); }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="title">
+      <div class="badge">🗝️</div>
+      <div>
+        <h1>The Quest for Knowledge: Doors of Decisions</h1>
+        <p class="subtitle">
+          You are an apprentice seeker in the Library-Labyrinth. Behind each door is a rule.
+          Lurking in the shadows: the villains known as the <strong>Sinister Syntax Slobs</strong> 🧼💀
+        </p>
+      </div>
+    </div>
+
+    <div class="card" id="card">
+      <div class="card-header">
+        <div class="progress" id="progressText">Door 1 of 6</div>
+        <button id="resetBtn" title="Start over">Reset</button>
+      </div>
+
+      <div class="card-body">
+        <div class="story" id="storyBox">
+          You step into a corridor of stone and glowing code-runes. Six doors stand in a line.
+          Each door opens only when a condition becomes <strong>true</strong>. If it’s not true… the door just stares at you. 😐
+        </div>
+
+        <!-- STEP 1 -->
+        <div class="step" id="step1">
+          <div class="step-title">Door 1: The Simple Choice</div>
+          <div class="row">
+            <button class="primary" id="btnYes">Yes, I will seek knowledge</button>
+            <button id="btnNo">No</button>
+          </div>
+          <div class="hint">Goal: one choice. If “Yes” is selected, you proceed. If not, nothing happens.</div>
+        </div>
+
+        <!-- STEP 2 -->
+        <div class="step locked" id="step2">
+          <div class="step-title">Door 2: The Number Gate</div>
+          <div class="row">
+            <input type="number" id="numInput" placeholder="Type a number…" />
+            <button class="primary" id="btnCheckNum">Try the number</button>
+          </div>
+          <div class="hint">Goal: choose a number higher than <strong id="numTargetText"></strong>.</div>
+        </div>
+
+        <!-- STEP 3 -->
+        <div class="step locked" id="step3">
+          <div class="step-title">Door 3: The Password Whisper</div>
+          <div class="row">
+            <input type="password" id="pwInput" placeholder="Enter password…" />
+            <button class="primary" id="btnCheckPw">Speak the password</button>
+          </div>
+          <div class="hint">Goal: the password must match <em>exactly</em> (capital letters matter).</div>
+        </div>
+
+        <!-- STEP 4 (OR) -->
+        <div class="step locked" id="step4">
+          <div class="step-title">Door 4: The OR Door (Either Works)</div>
+          <div class="row">
+            <label><input type="checkbox" id="orTorch" /> I found a Torch 🔥</label>
+            <label><input type="checkbox" id="orMap" /> I found a Map 🗺️</label>
+            <button class="primary" id="btnCheckOr">Try to open</button>
+          </div>
+          <div class="hint">Goal: Torch <strong>OR</strong> Map must be true (at least one).</div>
+        </div>
+
+        <!-- STEP 5 (AND) -->
+        <div class="step locked" id="step5">
+          <div class="step-title">Door 5: The AND Door (Both Required)</div>
+          <div class="row">
+            <label><input type="checkbox" id="andKey" /> I have the Key 🗝️</label>
+            <label><input type="checkbox" id="andCourage" /> I have Courage 🦁</label>
+            <button class="primary" id="btnCheckAnd">Try to open</button>
+          </div>
+          <div class="hint">Goal: Key <strong>AND</strong> Courage must be true (both).</div>
+        </div>
+
+        <!-- STEP 6 (NOT) -->
+        <div class="step locked" id="step6">
+          <div class="step-title">Door 6: The NOT Door (Must Be False)</div>
+          <div class="row">
+            <label><input type="checkbox" id="notSlobsNearby" /> A Syntax Slob is nearby 👾</label>
+            <button class="primary" id="btnCheckNot">Try to open</button>
+          </div>
+          <div class="hint">Goal: the condition must be NOT true. In other words: “Slob nearby” must be <strong>false</strong>.</div>
+        </div>
+
+        <!-- FINAL -->
+        <div class="step locked" id="finalStep">
+          <div class="step-title">Chapter 2 Doorway</div>
+          <div class="row">
+            <button class="primary" id="btnChapter2">Enter Chapter 2 ➜</button>
+          </div>
+          <div class="hint">This is a placeholder. Next time, we’ll build the Chapter 2 activity here.</div>
+        </div>
+
+        <div class="msg" id="msgBox">
+          <div class="icon">📜</div>
+          <div id="msgText">Make a choice at Door 1 to begin.</div>
+        </div>
+
+        <div class="footer">
+          <div class="tiny">Tip: If nothing happens, it means the condition wasn’t true yet.</div>
+          <div class="tiny">Villain status: <span id="villainStatus">watching…</span> 🧼👀</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ---------- Settings you can tweak ----------
+    const NUMBER_TARGET = 12;          // Door 2 requires number > this
+    const PASSWORD = "NexusKey";       // Door 3 exact match
+    // ------------------------------------------
+
+    const $ = (id) => document.getElementById(id);
+
+    const card = $("card");
+    const progressText = $("progressText");
+    const storyBox = $("storyBox");
+    const msgBox = $("msgBox");
+    const msgText = $("msgText");
+    const villainStatus = $("villainStatus");
+
+    const step1 = $("step1");
+    const step2 = $("step2");
+    const step3 = $("step3");
+    const step4 = $("step4");
+    const step5 = $("step5");
+    const step6 = $("step6");
+    const finalStep = $("finalStep");
+
+    $("numTargetText").textContent = NUMBER_TARGET;
+
+    let currentDoor = 1;
+
+    function setProgress(n){
+      currentDoor = n;
+      progressText.textContent = `Door ${n} of 6`;
+    }
+
+    function unlock(stepEl){
+      stepEl.classList.remove("locked");
+    }
+
+    function lock(stepEl){
+      stepEl.classList.add("locked");
+    }
+
+    function setMessage(type, icon, text){
+      msgBox.classList.remove("good","bad");
+      if(type) msgBox.classList.add(type);
+      msgBox.querySelector(".icon").textContent = icon;
+      msgText.textContent = text;
+    }
+
+    function shakeCard(){
+      card.classList.remove("shake");
+      // force reflow so animation restarts
+      void card.offsetWidth;
+      card.classList.add("shake");
+    }
+
+    function advanceStory(text){
+      storyBox.textContent = text;
+    }
+
+    function resetAll(){
+      // reset inputs
+      $("numInput").value = "";
+      $("pwInput").value = "";
+      $("orTorch").checked = false;
+      $("orMap").checked = false;
+      $("andKey").checked = false;
+      $("andCourage").checked = false;
+      $("notSlobsNearby").checked = false;
+
+      // lock everything except step1
+      lock(step2); lock(step3); lock(step4); lock(step5); lock(step6); lock(finalStep);
+
+      setProgress(1);
+      villainStatus.textContent = "watching…";
+
+      advanceStory(
+        "You step into a corridor of stone and glowing code-runes. Six doors stand in a line. " +
+        "Each door opens only when a condition becomes true. If it’s not true… the door just stares at you."
+      );
+      setMessage(null, "📜", "Make a choice at Door 1 to begin.");
+    }
+
+    // --- Door 1: Yes/No (selection + conditional) ---
+    $("btnYes").addEventListener("click", () => {
+      unlock(step2);
+      setProgress(2);
+
+      advanceStory(
+        "Door 1 clicks open. A scroll unfurls: “A condition is like a question. If the answer is TRUE, you proceed.” " +
+        "From the ceiling, a tiny soap-scented hiss echoes... the Sinister Syntax Slobs have noticed you."
+      );
+
+      setMessage("good", "✅",
+        "You chose YES, so the condition became TRUE. That unlocked Door 2."
+      );
+      villainStatus.textContent = "alerted";
+    });
+
+    $("btnNo").addEventListener("click", () => {
+      // "nothing happens" (no progress); just a light message
+      shakeCard();
+      setMessage("bad", "⛔",
+        "You chose NO, so the condition was FALSE. Nothing opens. Door 1 remains stubborn."
+      );
+    });
+
+    // --- Door 2: number > target ---
+    $("btnCheckNum").addEventListener("click", () => {
+      const raw = $("numInput").value;
+      const n = Number(raw);
+
+      if(raw === "" || Number.isNaN(n)){
+        shakeCard();
+        setMessage("bad", "⚠️", "Type a number first.");
+        return;
+      }
+
+      if(n > NUMBER_TARGET){
+        unlock(step3);
+        setProgress(3);
+
+        advanceStory(
+          "Door 2 slides open with a satisfied rumble. A small plaque reads: “Comparisons decide.” " +
+          "Somewhere behind you, a Syntax Slob drops a semicolon like a banana peel."
+        );
+
+        setMessage("good", "✅",
+          `Your number (${n}) is higher than ${NUMBER_TARGET}, so the condition (number > ${NUMBER_TARGET}) was TRUE. Door 3 unlocked.`
+        );
+      } else {
+        shakeCard();
+        setMessage("bad", "⛔",
+          `Your number (${n}) is NOT higher than ${NUMBER_TARGET}. The condition was FALSE, so nothing happens.`
+        );
+      }
+    });
+
+    // --- Door 3: exact password match ---
+    $("btnCheckPw").addEventListener("click", () => {
+      const pw = $("pwInput").value;
+
+      if(pw === PASSWORD){
+        unlock(step4);
+        setProgress(4);
+
+        advanceStory(
+          "Door 3 opens quietly, like it was listening carefully. A whisper in the air: “Exact match.” " +
+          "The Syntax Slobs grumble. They hate precision. It makes them itchy."
+        );
+
+        setMessage("good", "✅",
+          `Your password matched exactly, so the condition (input == "${PASSWORD}") was TRUE. Door 4 unlocked.`
+        );
+      } else {
+        shakeCard();
+        setMessage("bad", "⛔",
+          "That password was not an exact match. The condition was FALSE, so nothing happens."
+        );
+      }
+    });
+
+    // --- Door 4: OR operator ---
+    $("btnCheckOr").addEventListener("click", () => {
+      const torch = $("orTorch").checked;
+      const map = $("orMap").checked;
+
+      if(torch || map){
+        unlock(step5);
+        setProgress(5);
+
+        advanceStory(
+          "Door 4 swings open with dramatic flair. A sign flips down: “OR means either one is enough.” " +
+          "A Syntax Slob tries to block your path, but slips on its own messy logic and slides away."
+        );
+
+        let which = [];
+        if(torch) which.push("Torch");
+        if(map) which.push("Map");
+
+        setMessage("good", "✅",
+          `You had ${which.join(" and ")}. Because OR only needs ONE true choice, the condition (Torch OR Map) was TRUE. Door 5 unlocked.`
+        );
+      } else {
+        shakeCard();
+        setMessage("bad", "⛔",
+          "You have neither Torch nor Map. With OR, at least one must be true. Condition was FALSE, so nothing happens."
+        );
+      }
+    });
+
+    // --- Door 5: AND operator ---
+    $("btnCheckAnd").addEventListener("click", () => {
+      const key = $("andKey").checked;
+      const courage = $("andCourage").checked;
+
+      if(key && courage){
+        unlock(step6);
+        setProgress(6);
+
+        advanceStory(
+          "Door 5 unlocks with a double-click sound, like TWO approvals were needed. " +
+          "A banner appears: “AND means BOTH must be true.” The Syntax Slobs frown in unison. That’s teamwork, and they don’t do teamwork."
+        );
+
+        setMessage("good", "✅",
+          "You had the Key AND Courage. Because AND needs BOTH true, the condition was TRUE. Door 6 unlocked."
+        );
+      } else {
+        shakeCard();
+        const missing = [];
+        if(!key) missing.push("Key");
+        if(!courage) missing.push("Courage");
+
+        setMessage("bad", "⛔",
+          `AND needs BOTH true. You’re missing: ${missing.join(" and ")}. Condition was FALSE, so nothing happens.`
+        );
+      }
+    });
+
+    // --- Door 6: NOT operator ---
+    $("btnCheckNot").addEventListener("click", () => {
+      const slobNearby = $("notSlobsNearby").checked;
+
+      // Want NOT(slobNearby) to be true, meaning slobNearby must be false
+      if(!slobNearby){
+        unlock(finalStep);
+
+        advanceStory(
+          "Door 6 glows and opens because the danger is NOT nearby. A final inscription appears: “NOT flips the truth.” " +
+          "In the distance, the Sinister Syntax Slobs retreat, defeated by your clean conditions."
+        );
+
+        setMessage("good", "✅",
+          "You made “Slob nearby” FALSE, so NOT(FALSE) became TRUE. That opened the final doorway to Chapter 2."
+        );
+        villainStatus.textContent = "retreating";
+      } else {
+        shakeCard();
+        setMessage("bad", "⛔",
+          "Uh oh. “Slob nearby” is TRUE, so NOT(TRUE) is FALSE. The door refuses to open. Nothing happens."
+        );
+        villainStatus.textContent = "very nearby";
+      }
+    });
+
+    // --- Final: Chapter 2 placeholder ---
+    $("btnChapter2").addEventListener("click", () => {
+      setMessage("good", "📘",
+        "Chapter 2 will go here next! (For now, you’ve completed Chapter 1: selections + conditionals.)"
+      );
+      advanceStory(
+        "You step through the doorway and feel the air change. The Library-Labyrinth continues… " +
+        "and Chapter 2 waits beyond the next page of the story."
+      );
+    });
+
+    $("resetBtn").addEventListener("click", resetAll);
+
+    // Init
+    resetAll();
+  </script>
+</body>
+</html>
