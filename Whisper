@@ -355,7 +355,7 @@
   <script>
     // ---------- Settings you can tweak ----------
     const NUMBER_TARGET = 12;          // Door 2 requires number > this
-    const PASSWORD = "NexusKey";       // Door 3 exact match
+    const PASSWORD = "WHAT";       // Door 3 exact match
     // ------------------------------------------
 
     const $ = (id) => document.getElementById(id);
@@ -497,7 +497,7 @@
         setProgress(4);
 
         advanceStory(
-          "Door 3 opens quietly, like it was listening carefully. A whisper in the air: “Exact match.” " +
+          "Door 3 opens quietly, like it was listening carefully. A whisper in the air: “Exact match. WHAT is the password.” " +
           "The Syntax Slobs grumble. They hate precision. It makes them itchy."
         );
 
