@@ -27,22 +27,59 @@ body{
   padding:18px;
 }
 
-.wrap{ max-width:900px; margin:auto; }
+.wrap{ max-width:1100px; margin:auto; }
 
-h1{ font-size:20px; margin:0; }
+h1{ font-size:20px; margin:0 0 12px 0; }
 
-.card{
-  margin-top:12px;
+/* ---------- Layout ---------- */
+.grid{
+  display:grid;
+  grid-template-columns: 340px 1fr;
+  gap:14px;
+  align-items:start;
+}
+
+@media (max-width: 860px){
+  .grid{ grid-template-columns: 1fr; }
+  .side{ position: static !important; top:auto !important; }
+}
+
+/* ---------- Side panel (sticky) ---------- */
+.side{
+  position: sticky;
+  top: 14px;
   border:1px solid var(--border);
   border-radius:var(--radius);
-  padding:16px;
+  padding:14px;
+  background:rgba(255,255,255,0.03);
 }
 
 .story{
   background:rgba(0,0,0,0.25);
   padding:14px;
   border-radius:12px;
-  margin-bottom:14px;
+  margin-bottom:12px;
+  line-height:1.45;
+}
+
+/* Message box is always visible, same words as before */
+.msg{
+  padding:10px;
+  border-radius:10px;
+  margin-top:8px;
+  line-height:1.35;
+}
+
+.msg.good{ background:rgba(134,239,172,0.2); }
+.msg.bad{ background:rgba(252,165,165,0.2); }
+.msg.neutral{ background:rgba(0,0,0,0.22); border:1px solid rgba(255,255,255,0.10); }
+
+/* ---------- Main content ---------- */
+.main{
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:16px;
+  background:rgba(255,255,255,0.03);
 }
 
 .step{
@@ -51,6 +88,8 @@ h1{ font-size:20px; margin:0; }
   padding:14px;
   margin-top:14px;
 }
+
+.step:first-child{ margin-top:0; }
 
 .step-title{
   color:var(--accent);
@@ -72,9 +111,7 @@ button{
   cursor:pointer;
 }
 
-button.primary{
-  background:rgba(125,211,252,0.25);
-}
+button.primary{ background:rgba(125,211,252,0.25); }
 
 input, select{
   padding:8px 10px;
@@ -82,6 +119,7 @@ input, select{
   border:1px solid rgba(255,255,255,0.2);
   background:rgba(0,0,0,0.3);
   color:white;
+  margin-right:8px;
 }
 
 .hint{
@@ -105,16 +143,16 @@ input, select{
   font-family: monospace;
   font-size:12px;
   white-space:pre;
+  overflow:auto;
 }
 
-.msg{
-  margin-top:14px;
-  padding:10px;
-  border-radius:10px;
+/* small utility row spacing */
+.row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  align-items:center;
 }
-
-.msg.good{ background:rgba(134,239,172,0.2); }
-.msg.bad{ background:rgba(252,165,165,0.2); }
 </style>
 </head>
 
@@ -123,75 +161,92 @@ input, select{
 
 <h1>📘 Chapter 2: The Hall of Ifs</h1>
 
-<div class="card">
-<div class="story" id="story">
-You move deeper into the Library-Labyrinth.
-Each door now expects you to <strong>predict</strong> what will happen
-before you see the Python spell behind it.
-</div>
+<div class="grid">
 
-<!-- DOOR 1 -->
-<div class="step" id="d1">
-<div class="step-title">Door 1: if–else</div>
+  <!-- SIDE PANEL: always visible -->
+  <aside class="side">
+    <div class="story" id="story">
+      You move deeper into the Library-Labyrinth.
+      Each door now expects you to <strong>predict</strong> what will happen
+      before you see the Python spell behind it.
+    </div>
 
-<div class="predict">Before you click: which choice will open the door?</div>
+    <div class="msg neutral" id="msg">Start with Door 1.</div>
+  </aside>
 
-<select id="d1_choice">
-<option value="">Choose…</option>
-<option value="please">Say “please”</option>
-<option value="kick">Kick the door</option>
-</select>
+  <!-- MAIN PANEL: doors -->
+  <main class="main">
 
-<button class="primary" id="d1_try">Try</button>
+    <!-- DOOR 1 -->
+    <div class="step" id="d1">
+      <div class="step-title">Door 1: if–else</div>
 
-<div class="hint">Exactly one option will succeed.</div>
-<div class="codebox" id="d1_code"></div>
-</div>
+      <div class="predict">Before you click: which choice will open the door?</div>
 
-<!-- DOOR 2 -->
-<div class="step locked" id="d2">
-<div class="step-title">Door 2: if–elif (no else)</div>
+      <div class="row">
+        <select id="d1_choice">
+          <option value="">Choose…</option>
+          <option value="please">Say “please”</option>
+          <option value="kick">Kick the door</option>
+        </select>
+        <button class="primary" id="d1_try">Try</button>
+      </div>
 
-<div class="predict">Before you click: will the door open, message, or do nothing?</div>
+      <div class="hint">Exactly one option will succeed.</div>
+      <div class="codebox" id="d1_code"></div>
+    </div>
 
-<input type="number" id="d2_num" placeholder="Number">
-<button class="primary" id="d2_try">Test</button>
+    <!-- DOOR 2 -->
+    <div class="step locked" id="d2">
+      <div class="step-title">Door 2: if–elif (no else)</div>
 
-<div class="hint">If nothing happens, that’s part of the lesson.</div>
-<div class="codebox" id="d2_code"></div>
-</div>
+      <div class="predict">Before you click: will the door open, message, or do nothing?</div>
 
-<!-- DOOR 3 -->
-<div class="step locked" id="d3">
-<div class="step-title">Door 3: if–elif–elif</div>
+      <div class="row">
+        <input type="number" id="d2_num" placeholder="Number">
+        <button class="primary" id="d2_try">Test</button>
+      </div>
 
-<div class="predict">Before you click: which item matches first?</div>
+      <div class="hint">If nothing happens, that’s part of the lesson.</div>
+      <div class="codebox" id="d2_code"></div>
+    </div>
 
-<select id="d3_item">
-<option value="">Choose…</option>
-<option value="feather">Feather</option>
-<option value="soap">Soap</option>
-<option value="banana">Banana</option>
-<option value="rock">Rock</option>
-</select>
+    <!-- DOOR 3 -->
+    <div class="step locked" id="d3">
+      <div class="step-title">Door 3: if–elif–elif</div>
 
-<button class="primary" id="d3_try">Offer</button>
-<div class="codebox" id="d3_code"></div>
-</div>
+      <div class="predict">Before you click: which item matches first?</div>
 
-<!-- DOOR 4 -->
-<div class="step locked" id="d4">
-<div class="step-title">Door 4: if–elif–else</div>
+      <div class="row">
+        <select id="d3_item">
+          <option value="">Choose…</option>
+          <option value="feather">Feather</option>
+          <option value="soap">Soap</option>
+          <option value="banana">Banana</option>
+          <option value="rock">Rock</option>
+        </select>
 
-<div class="predict">Before you click: which message will print?</div>
+        <button class="primary" id="d3_try">Offer</button>
+      </div>
 
-<input type="number" id="d4_score" placeholder="Score">
-<button class="primary" id="d4_try">Check</button>
-<div class="codebox" id="d4_code"></div>
-</div>
+      <div class="codebox" id="d3_code"></div>
+    </div>
 
-<div class="msg" id="msg">Start with Door 1.</div>
+    <!-- DOOR 4 -->
+    <div class="step locked" id="d4">
+      <div class="step-title">Door 4: if–elif–else</div>
 
+      <div class="predict">Before you click: which message will print?</div>
+
+      <div class="row">
+        <input type="number" id="d4_score" placeholder="Score">
+        <button class="primary" id="d4_try">Check</button>
+      </div>
+
+      <div class="codebox" id="d4_code"></div>
+    </div>
+
+  </main>
 </div>
 </div>
 
@@ -204,8 +259,20 @@ function showCode(id, text){
   box.textContent = text;
 }
 
+function setMsg(text, kind){
+  const el = $("msg");
+  el.textContent = text;
+
+  // keep message wording the same; just move it and style it
+  el.classList.remove("good","bad","neutral");
+  if(kind === "good") el.classList.add("good");
+  else if(kind === "bad") el.classList.add("bad");
+  else el.classList.add("neutral");
+}
+
 $("d1_try").onclick = () => {
   const c = $("d1_choice").value;
+
   showCode("d1_code",
 `if choice == "please":
     print("Open")
@@ -214,16 +281,15 @@ else:
 
   if(c === "please"){
     $("d2").classList.remove("locked");
-    $("msg").className = "msg good";
-    $("msg").textContent = "Correct prediction: IF was true.";
+    setMsg("Correct prediction: IF was true.", "good");
   } else {
-    $("msg").className = "msg bad";
-    $("msg").textContent = "ELSE ran. Door stayed closed.";
+    setMsg("ELSE ran. Door stayed closed.", "bad");
   }
 };
 
 $("d2_try").onclick = () => {
   const n = Number($("d2_num").value);
+
   showCode("d2_code",
 `if n > 12:
     print("Open")
@@ -232,19 +298,17 @@ elif n == 12:
 
   if(n > 12){
     $("d3").classList.remove("locked");
-    $("msg").className = "msg good";
-    $("msg").textContent = "IF matched first. Door opens.";
+    setMsg("IF matched first. Door opens.", "good");
   } else if(n === 12){
-    $("msg").className = "msg good";
-    $("msg").textContent = "ELIF matched. Message only.";
+    setMsg("ELIF matched. Message only.", "good");
   } else {
-    $("msg").className = "msg bad";
-    $("msg").textContent = "No condition true. Nothing happened.";
+    setMsg("No condition true. Nothing happened.", "bad");
   }
 };
 
 $("d3_try").onclick = () => {
   const i = $("d3_item").value;
+
   showCode("d3_code",
 `if item == "feather":
     open()
@@ -255,16 +319,15 @@ elif item == "banana":
 
   if(i === "feather"){
     $("d4").classList.remove("locked");
-    $("msg").className = "msg good";
-    $("msg").textContent = "First true condition wins.";
+    setMsg("First true condition wins.", "good");
   } else {
-    $("msg").className = "msg bad";
-    $("msg").textContent = "Not the first match.";
+    setMsg("Not the first match.", "bad");
   }
 };
 
 $("d4_try").onclick = () => {
   const s = Number($("d4_score").value);
+
   showCode("d4_code",
 `if score >= 80:
     print("Great")
@@ -273,9 +336,11 @@ elif score >= 50:
 else:
     print("Try again")`);
 
-  $("msg").className = "msg good";
-  $("msg").textContent = "ELSE guarantees a path.";
+  setMsg("ELSE guarantees a path.", "good");
 };
+
+// Init (same wording as before)
+setMsg("Start with Door 1.", "neutral");
 </script>
 
 </body>
