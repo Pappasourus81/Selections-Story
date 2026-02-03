@@ -1,648 +1,282 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Quest for Knowledge – Chapter 2 (If / Else / Elif)</title>
-  <style>
-    :root{
-      --bg:#0b1220;
-      --text:#e7eefc;
-      --muted:#a8b5d6;
-      --accent:#7dd3fc;
-      --good:#86efac;
-      --bad:#fca5a5;
-      --border:rgba(255,255,255,0.12);
-      --shadow: 0 10px 30px rgba(0,0,0,0.35);
-      --radius:16px;
-      --focus: 0 0 0 3px rgba(125,211,252,0.25);
-      font-synthesis-weight: none;
-    }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quest for Knowledge – Chapter 2 (Predict First)</title>
 
-    * { box-sizing: border-box; }
-    body{
-      margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Helvetica Neue";
-      background: radial-gradient(1200px 700px at 20% 10%, rgba(125,211,252,0.12), transparent 60%),
-                  radial-gradient(900px 600px at 80% 30%, rgba(134,239,172,0.10), transparent 55%),
-                  var(--bg);
-      color:var(--text);
-      padding:18px;
-    }
+<style>
+:root{
+  --bg:#0b1220;
+  --text:#e7eefc;
+  --muted:#a8b5d6;
+  --accent:#7dd3fc;
+  --good:#86efac;
+  --bad:#fca5a5;
+  --border:rgba(255,255,255,0.12);
+  --radius:16px;
+}
 
-    .wrap{ max-width: 900px; margin: 0 auto; }
+*{ box-sizing:border-box; }
 
-    .title{
-      display:flex;
-      gap:14px;
-      align-items:flex-start;
-      margin-bottom: 14px;
-    }
+body{
+  margin:0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  background: var(--bg);
+  color:var(--text);
+  padding:18px;
+}
 
-    .badge{
-      flex:0 0 auto;
-      width:44px; height:44px;
-      border-radius: 12px;
-      background: linear-gradient(135deg, rgba(125,211,252,0.25), rgba(134,239,172,0.20));
-      border:1px solid var(--border);
-      box-shadow: var(--shadow);
-      display:grid;
-      place-items:center;
-      font-size: 22px;
-    }
+.wrap{ max-width:900px; margin:auto; }
 
-    h1{ margin:0; font-size: 20px; letter-spacing: 0.2px; }
-    .subtitle{
-      margin:6px 0 0 0;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.35;
-    }
+h1{ font-size:20px; margin:0; }
 
-    .card{
-      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
-      border:1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      overflow:hidden;
-    }
+.card{
+  margin-top:12px;
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:16px;
+}
 
-    .card-header{
-      padding: 14px 16px;
-      background: rgba(255,255,255,0.02);
-      border-bottom:1px solid var(--border);
-      display:flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-    }
+.story{
+  background:rgba(0,0,0,0.25);
+  padding:14px;
+  border-radius:12px;
+  margin-bottom:14px;
+}
 
-    .progress{
-      color: var(--muted);
-      font-size: 12px;
-      white-space: nowrap;
-    }
+.step{
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:12px;
+  padding:14px;
+  margin-top:14px;
+}
 
-    .card-body{ padding: 16px; }
+.step-title{
+  color:var(--accent);
+  font-weight:600;
+  margin-bottom:6px;
+}
 
-    .story{
-      background: rgba(0,0,0,0.18);
-      border:1px solid rgba(255,255,255,0.10);
-      border-radius: 14px;
-      padding: 12px 12px;
-      line-height: 1.45;
-      color: var(--text);
-    }
+.locked{
+  opacity:0.45;
+  pointer-events:none;
+}
 
-    .step{
-      margin-top: 14px;
-      padding: 14px;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.10);
-      background: rgba(255,255,255,0.02);
-    }
+button{
+  padding:8px 12px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,0.2);
+  background:rgba(255,255,255,0.1);
+  color:white;
+  cursor:pointer;
+}
 
-    .step-title{
-      margin:0 0 8px 0;
-      font-size: 14px;
-      color: var(--accent);
-      letter-spacing: 0.2px;
-    }
+button.primary{
+  background:rgba(125,211,252,0.25);
+}
 
-    .row{
-      display:flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      align-items: center;
-    }
+input, select{
+  padding:8px 10px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,0.2);
+  background:rgba(0,0,0,0.3);
+  color:white;
+}
 
-    button{
-      border:1px solid rgba(255,255,255,0.14);
-      background: rgba(255,255,255,0.06);
-      color: var(--text);
-      padding: 10px 12px;
-      border-radius: 12px;
-      cursor:pointer;
-      transition: transform 0.06s ease, background 0.15s ease, border-color 0.15s ease;
-      font-weight: 600;
-      letter-spacing: 0.2px;
-    }
-    button:hover{ background: rgba(255,255,255,0.10); }
-    button:active{ transform: translateY(1px); }
-    button:focus{ outline:none; box-shadow: var(--focus); }
+.hint{
+  font-size:12px;
+  color:var(--muted);
+  margin-top:6px;
+}
 
-    .primary{
-      background: rgba(125,211,252,0.18);
-      border-color: rgba(125,211,252,0.35);
-    }
+.predict{
+  font-size:13px;
+  color:#fde68a;
+  margin-bottom:6px;
+}
 
-    select, input[type="number"], input[type="text"]{
-      background: rgba(0,0,0,0.22);
-      border:1px solid rgba(255,255,255,0.16);
-      color: var(--text);
-      padding: 10px 12px;
-      border-radius: 12px;
-      width: 260px;
-      max-width: 100%;
-    }
-    select:focus, input:focus{ outline:none; box-shadow: var(--focus); }
+.codebox{
+  display:none;
+  margin-top:10px;
+  background:rgba(0,0,0,0.3);
+  padding:10px;
+  border-radius:10px;
+  font-family: monospace;
+  font-size:12px;
+  white-space:pre;
+}
 
-    .hint{
-      margin-top: 10px;
-      font-size: 12px;
-      color: var(--muted);
-    }
+.msg{
+  margin-top:14px;
+  padding:10px;
+  border-radius:10px;
+}
 
-    .codebox{
-      margin-top: 10px;
-      border-radius: 12px;
-      border:1px solid rgba(255,255,255,0.10);
-      background: rgba(0,0,0,0.22);
-      padding: 10px 12px;
-      overflow:auto;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size: 12px;
-      color: rgba(231,238,252,0.92);
-      line-height: 1.45;
-      white-space: pre;
-    }
-
-    .msg{
-      margin-top: 12px;
-      padding: 10px 12px;
-      border-radius: 12px;
-      border:1px solid rgba(255,255,255,0.10);
-      background: rgba(0,0,0,0.18);
-      color: var(--muted);
-      line-height: 1.4;
-      min-height: 44px;
-      display:flex;
-      align-items:center;
-      gap: 10px;
-    }
-    .msg.good{
-      border-color: rgba(134,239,172,0.35);
-      background: rgba(134,239,172,0.10);
-      color: var(--text);
-    }
-    .msg.bad{
-      border-color: rgba(252,165,165,0.35);
-      background: rgba(252,165,165,0.08);
-      color: var(--text);
-    }
-    .msg .icon{ width: 22px; text-align:center; flex: 0 0 auto; }
-
-    .locked{ opacity: 0.45; filter: grayscale(0.2); pointer-events: none; }
-
-    .footer{
-      margin-top: 14px;
-      display:flex;
-      justify-content: space-between;
-      gap: 10px;
-      flex-wrap: wrap;
-      color: var(--muted);
-      font-size: 12px;
-    }
-    .tiny{ font-size: 11px; color: rgba(168,181,214,0.85); }
-
-    .shake{ animation: shake 0.22s linear 1; }
-    @keyframes shake{
-      0%{ transform: translateX(0); }
-      25%{ transform: translateX(-3px); }
-      50%{ transform: translateX(3px); }
-      75%{ transform: translateX(-2px); }
-      100%{ transform: translateX(0); }
-    }
-  </style>
+.msg.good{ background:rgba(134,239,172,0.2); }
+.msg.bad{ background:rgba(252,165,165,0.2); }
+</style>
 </head>
 
 <body>
-  <div class="wrap">
-    <div class="title">
-      <div class="badge">📘</div>
-      <div>
-        <h1>Chapter 2: The Hall of Ifs</h1>
-        <p class="subtitle">
-          The <strong>Sinister Syntax Slobs</strong> have upgraded their defenses.
-          These doors don’t just ask one question… they sometimes ask a second. 😐
-        </p>
-      </div>
-    </div>
+<div class="wrap">
 
-    <div class="card" id="card">
-      <div class="card-header">
-        <div class="progress" id="progressText">Door 1 of 5</div>
-        <button id="resetBtn" title="Start over">Reset</button>
-      </div>
+<h1>📘 Chapter 2: The Hall of Ifs</h1>
 
-      <div class="card-body">
-        <div class="story" id="storyBox">
-          You step into a new corridor. The air smells faintly of soap and suspicious confidence.
-          Five doors stand ahead, each guarded by a Python spell: <strong>if</strong>, <strong>else</strong>, and <strong>elif</strong>.
-        </div>
+<div class="card">
+<div class="story" id="story">
+You move deeper into the Library-Labyrinth.
+Each door now expects you to <strong>predict</strong> what will happen
+before you see the Python spell behind it.
+</div>
 
-        <!-- DOOR 1: if-else -->
-        <div class="step" id="d1">
-          <div class="step-title">Door 1: if–else (Two Paths)</div>
-          <div class="row">
-            <select id="d1_choice">
-              <option value="" selected>Select a choice…</option>
-              <option value="say_please">Say “please” to the door</option>
-              <option value="kick">Kick the door</option>
-            </select>
-            <button class="primary" id="d1_try">Cast the spell</button>
-          </div>
-          <div class="hint">Goal: see how <strong>else</strong> handles “otherwise”. One of these choices opens the door.</div>
-          <div class="codebox" id="d1_code"></div>
-        </div>
+<!-- DOOR 1 -->
+<div class="step" id="d1">
+<div class="step-title">Door 1: if–else</div>
 
-        <!-- DOOR 2: if-elif (no else) -->
-        <div class="step locked" id="d2">
-          <div class="step-title">Door 2: if–elif (Sometimes Nothing Happens)</div>
-          <div class="row">
-            <input type="number" id="d2_num" placeholder="Enter a number…" />
-            <button class="primary" id="d2_try">Test the number</button>
-          </div>
-          <div class="hint">
-            Goal: This door uses <strong>if</strong> and <strong>elif</strong>, but no <strong>else</strong>.
-            If neither condition is true, the door does nothing. (Classic door.)
-          </div>
-          <div class="codebox" id="d2_code"></div>
-        </div>
+<div class="predict">Before you click: which choice will open the door?</div>
 
-        <!-- DOOR 3: if-elif-elif (no else) -->
-        <div class="step locked" id="d3">
-          <div class="step-title">Door 3: if–elif–elif (More Choices)</div>
-          <div class="row">
-            <select id="d3_item">
-              <option value="" selected>Choose your item…</option>
-              <option value="feather">A Quill Feather</option>
-              <option value="soap">A Bar of Soap</option>
-              <option value="banana">A Banana Peel</option>
-              <option value="rock">A Rock</option>
-            </select>
-            <button class="primary" id="d3_try">Offer the item</button>
-          </div>
-          <div class="hint">
-            Goal: The door checks multiple options using <strong>elif</strong>. Still no <strong>else</strong>,
-            so some choices lead to… nothing.
-          </div>
-          <div class="codebox" id="d3_code"></div>
-        </div>
+<select id="d1_choice">
+<option value="">Choose…</option>
+<option value="please">Say “please”</option>
+<option value="kick">Kick the door</option>
+</select>
 
-        <!-- DOOR 4: if-elif-else -->
-        <div class="step locked" id="d4">
-          <div class="step-title">Door 4: if–elif–else (A Complete Decision)</div>
-          <div class="row">
-            <input type="number" id="d4_score" placeholder="Enter your ‘Bravery Score’…" />
-            <button class="primary" id="d4_try">Check bravery</button>
-          </div>
-          <div class="hint">
-            Goal: This door always chooses a path because it has an <strong>else</strong>.
-            It catches anything not already caught.
-          </div>
-          <div class="codebox" id="d4_code"></div>
-        </div>
+<button class="primary" id="d1_try">Try</button>
 
-        <!-- DOOR 5: if-elif-else-else (not allowed) -->
-        <div class="step locked" id="d5">
-          <div class="step-title">Door 5: The Forbidden Spell (Two else?)</div>
-          <div class="row">
-            <select id="d5_fix">
-              <option value="" selected>Choose the correct fix…</option>
-              <option value="keep_two_else">Keep both else blocks (because… why not?)</option>
-              <option value="remove_second_else">Remove the second else (only one else allowed)</option>
-              <option value="add_more_else">Add a third else (maximum chaos)</option>
-            </select>
-            <button class="primary" id="d5_try">Repair the spell</button>
-          </div>
-          <div class="hint">
-            Goal: Python allows <strong>only one else</strong> at the end.
-            This door is guarded by a Syntax Slob who loves mistakes.
-          </div>
-          <div class="codebox" id="d5_code"></div>
-        </div>
+<div class="hint">Exactly one option will succeed.</div>
+<div class="codebox" id="d1_code"></div>
+</div>
 
-        <!-- FINISH -->
-        <div class="step locked" id="finish">
-          <div class="step-title">Chapter 3 Doorway</div>
-          <div class="row">
-            <button class="primary" id="finish_btn">Continue the quest ➜</button>
-          </div>
-          <div class="hint">Placeholder: next lesson we can continue the story (and later introduce AND/OR/NOT).</div>
-        </div>
+<!-- DOOR 2 -->
+<div class="step locked" id="d2">
+<div class="step-title">Door 2: if–elif (no else)</div>
 
-        <div class="msg" id="msgBox">
-          <div class="icon">📜</div>
-          <div id="msgText">Start at Door 1. Your choices will trigger different branches.</div>
-        </div>
+<div class="predict">Before you click: will the door open, message, or do nothing?</div>
 
-        <div class="footer">
-          <div class="tiny">Teacher tip: Ask students to predict the output before pressing the button.</div>
-          <div class="tiny">Villain status: <span id="villainStatus">plotting…</span> 🧼👀</div>
-        </div>
-      </div>
-    </div>
-  </div>
+<input type="number" id="d2_num" placeholder="Number">
+<button class="primary" id="d2_try">Test</button>
 
-  <script>
-    const $ = (id) => document.getElementById(id);
+<div class="hint">If nothing happens, that’s part of the lesson.</div>
+<div class="codebox" id="d2_code"></div>
+</div>
 
-    const card = $("card");
-    const progressText = $("progressText");
-    const storyBox = $("storyBox");
-    const msgBox = $("msgBox");
-    const msgText = $("msgText");
-    const villainStatus = $("villainStatus");
+<!-- DOOR 3 -->
+<div class="step locked" id="d3">
+<div class="step-title">Door 3: if–elif–elif</div>
 
-    const d1 = $("d1"), d2 = $("d2"), d3 = $("d3"), d4 = $("d4"), d5 = $("d5"), finish = $("finish");
+<div class="predict">Before you click: which item matches first?</div>
 
-    let door = 1;
+<select id="d3_item">
+<option value="">Choose…</option>
+<option value="feather">Feather</option>
+<option value="soap">Soap</option>
+<option value="banana">Banana</option>
+<option value="rock">Rock</option>
+</select>
 
-    function setProgress(n){
-      door = n;
-      progressText.textContent = `Door ${n} of 5`;
-    }
+<button class="primary" id="d3_try">Offer</button>
+<div class="codebox" id="d3_code"></div>
+</div>
 
-    function unlock(el){ el.classList.remove("locked"); }
-    function lock(el){ el.classList.add("locked"); }
+<!-- DOOR 4 -->
+<div class="step locked" id="d4">
+<div class="step-title">Door 4: if–elif–else</div>
 
-    function setMessage(type, icon, text){
-      msgBox.classList.remove("good","bad");
-      if(type) msgBox.classList.add(type);
-      msgBox.querySelector(".icon").textContent = icon;
-      msgText.textContent = text;
-    }
+<div class="predict">Before you click: which message will print?</div>
 
-    function shakeCard(){
-      card.classList.remove("shake");
-      void card.offsetWidth;
-      card.classList.add("shake");
-    }
+<input type="number" id="d4_score" placeholder="Score">
+<button class="primary" id="d4_try">Check</button>
+<div class="codebox" id="d4_code"></div>
+</div>
 
-    function story(text){ storyBox.textContent = text; }
+<div class="msg" id="msg">Start with Door 1.</div>
 
-    function resetAll(){
-      $("d1_choice").value = "";
-      $("d2_num").value = "";
-      $("d3_item").value = "";
-      $("d4_score").value = "";
-      $("d5_fix").value = "";
+</div>
+</div>
 
-      lock(d2); lock(d3); lock(d4); lock(d5); lock(finish);
+<script>
+const $ = id => document.getElementById(id);
 
-      $("d1_code").textContent = "";
-      $("d2_code").textContent = "";
-      $("d3_code").textContent = "";
-      $("d4_code").textContent = "";
-      $("d5_code").textContent = "";
+function showCode(id, text){
+  const box = $(id);
+  box.style.display = "block";
+  box.textContent = text;
+}
 
-      setProgress(1);
-      villainStatus.textContent = "plotting…";
-      story(
-        "You step into a new corridor. The air smells faintly of soap and suspicious confidence. " +
-        "Five doors stand ahead, each guarded by a Python spell: if, else, and elif."
-      );
-      setMessage(null, "📜", "Start at Door 1. Your choices will trigger different branches.");
-    }
-
-    $("resetBtn").addEventListener("click", resetAll);
-
-    // -------------------------
-    // Door 1: if-else
-    // -------------------------
-    $("d1_try").addEventListener("click", () => {
-      const choice = $("d1_choice").value;
-
-      $("d1_code").textContent =
-`choice = "${choice}"
-
-if choice == "say_please":
-    print("The door smiles and opens.")
-else:
-    print("The door stays shut.")`;
-
-      if(choice === "say_please"){
-        unlock(d2);
-        setProgress(2);
-        villainStatus.textContent = "annoyed";
-        story(
-          "Door 1 clicks open. A polite breeze whispers: “else means otherwise.” " +
-          "A Syntax Slob in the shadows grumbles, then drops a semicolon in disappointment."
-        );
-        setMessage("good", "✅",
-          "Your choice matched the IF condition, so it was TRUE. The IF branch ran, and Door 2 unlocked."
-        );
-      } else if(choice === "kick"){
-        shakeCard();
-        setMessage("bad", "⛔",
-          "That didn’t match the IF condition, so it was FALSE. The ELSE branch ran… and the door stayed shut."
-        );
-      } else {
-        shakeCard();
-        setMessage("bad", "⚠️", "Pick a choice first.");
-      }
-    });
-
-    // -------------------------
-    // Door 2: if-elif (no else)
-    // -------------------------
-    // Conditions:
-    // if n > 12: opens
-    // elif n == 12: message only
-    // otherwise: nothing happens (stays locked)
-    $("d2_try").addEventListener("click", () => {
-      const raw = $("d2_num").value;
-      const n = Number(raw);
-
-      if(raw === "" || Number.isNaN(n)){
-        shakeCard();
-        setMessage("bad", "⚠️", "Type a number first.");
-        return;
-      }
-
-      $("d2_code").textContent =
-`n = ${n}
-
-if n > 12:
-    print("Door opens!")
-elif n == 12:
-    print("So close...")
-# no else here`;
-
-      if(n > 12){
-        unlock(d3);
-        setProgress(3);
-        villainStatus.textContent = "worrying";
-        story(
-          "Door 2 rumbles and opens. A small plaque reads: “With no else, some answers cause… silence.” " +
-          "The Syntax Slobs pretend that was their plan."
-        );
-        setMessage("good", "✅",
-          `n > 12 was TRUE, so the IF branch ran. Door 3 unlocked.`
-        );
-      } else if(n === 12){
-        // no unlock, but something happens (elif)
-        setMessage("good", "🟦",
-          `The IF was FALSE, but the ELIF (n == 12) was TRUE. A message happens… but the door still doesn’t open.`
-        );
-      } else {
-        // nothing happens concept: we still explain briefly
-        shakeCard();
-        setMessage("bad", "😐",
-          "Neither IF nor ELIF was true, and there is no ELSE… so nothing happens. The door stares at you."
-        );
-      }
-    });
-
-    // -------------------------
-    // Door 3: if-elif-elif (no else)
-    // -------------------------
-    // Feather opens, Soap gives message, Banana gives message, Rock does nothing.
-    $("d3_try").addEventListener("click", () => {
-      const item = $("d3_item").value;
-
-      $("d3_code").textContent =
-`item = "${item}"
-
-if item == "feather":
-    print("Accepted. Door opens.")
-elif item == "soap":
-    print("The door smells clean... but still closed.")
-elif item == "banana":
-    print("Slob slips. Door laughs... but stays closed.")
-# no else here`;
-
-      if(item === "feather"){
-        unlock(d4);
-        setProgress(4);
-        villainStatus.textContent = "panicking quietly";
-        story(
-          "Door 3 opens with a fluttering sound. The corridor ahead is brighter. " +
-          "The Syntax Slobs hiss: “Stop using elif correctly!”"
-        );
-        setMessage("good", "✅",
-          "The first TRUE condition wins. Your item matched the IF, so the door opened and Door 4 unlocked."
-        );
-      } else if(item === "soap" || item === "banana"){
-        setMessage("good", "🟦",
-          "The IF was FALSE, but an ELIF was TRUE. Something happened… but it didn’t unlock the next door."
-        );
-      } else if(item === "rock"){
-        shakeCard();
-        setMessage("bad", "😐",
-          "No IF/ELIF matched, and there is no ELSE. Nothing happens. The rock is unimpressed."
-        );
-      } else {
-        shakeCard();
-        setMessage("bad", "⚠️", "Choose an item first.");
-      }
-    });
-
-    // -------------------------
-    // Door 4: if-elif-else (complete decision)
-    // -------------------------
-    $("d4_try").addEventListener("click", () => {
-      const raw = $("d4_score").value;
-      const score = Number(raw);
-
-      if(raw === "" || Number.isNaN(score)){
-        shakeCard();
-        setMessage("bad", "⚠️", "Type a number first.");
-        return;
-      }
-
-      $("d4_code").textContent =
-`score = ${score}
-
-if score >= 80:
-    print("Legendary bravery!")
-elif score >= 50:
-    print("Brave enough.")
-else:
-    print("Try again tomorrow.")`;
-
-      // To proceed, require >= 50 (either IF or ELIF branch)
-      if(score >= 80){
-        unlock(d5);
-        setProgress(5);
-        villainStatus.textContent = "sweating soap bubbles";
-        story(
-          "Door 4 swings open confidently. A banner reads: “ELSE catches everything else.” " +
-          "A Syntax Slob tries to argue with the banner, loses, and retreats."
-        );
-        setMessage("good", "✅",
-          "The IF condition was TRUE, so that branch ran. Door 5 unlocked."
-        );
-      } else if(score >= 50){
-        unlock(d5);
-        setProgress(5);
-        villainStatus.textContent = "sweating soap bubbles";
-        story(
-          "Door 4 opens with a polite clunk. The corridor ahead smells less like soap and more like victory."
-        );
-        setMessage("good", "✅",
-          "The IF was FALSE, but the ELIF was TRUE. That branch ran. Door 5 unlocked."
-        );
-      } else {
-        setMessage("bad", "⛔",
-          "This time the ELSE branch ran. That’s the ‘otherwise’ path, and it doesn’t unlock the next door."
-        );
-      }
-    });
-
-    // -------------------------
-    // Door 5: if-elif-else-else (not allowed)
-    // -------------------------
-    $("d5_try").addEventListener("click", () => {
-      const fix = $("d5_fix").value;
-
-      $("d5_code").textContent =
-`# A Syntax Slob wrote this spell...
-
-if mood == "happy":
+$("d1_try").onclick = () => {
+  const c = $("d1_choice").value;
+  showCode("d1_code",
+`if choice == "please":
     print("Open")
-elif mood == "grumpy":
-    print("Still closed")
 else:
-    print("Closed")
+    print("Closed")`);
+
+  if(c === "please"){
+    $("d2").classList.remove("locked");
+    $("msg").className = "msg good";
+    $("msg").textContent = "Correct prediction: IF was true.";
+  } else {
+    $("msg").className = "msg bad";
+    $("msg").textContent = "ELSE ran. Door stayed closed.";
+  }
+};
+
+$("d2_try").onclick = () => {
+  const n = Number($("d2_num").value);
+  showCode("d2_code",
+`if n > 12:
+    print("Open")
+elif n == 12:
+    print("Almost")`);
+
+  if(n > 12){
+    $("d3").classList.remove("locked");
+    $("msg").className = "msg good";
+    $("msg").textContent = "IF matched first. Door opens.";
+  } else if(n === 12){
+    $("msg").className = "msg good";
+    $("msg").textContent = "ELIF matched. Message only.";
+  } else {
+    $("msg").className = "msg bad";
+    $("msg").textContent = "No condition true. Nothing happened.";
+  }
+};
+
+$("d3_try").onclick = () => {
+  const i = $("d3_item").value;
+  showCode("d3_code",
+`if item == "feather":
+    open()
+elif item == "soap":
+    clean()
+elif item == "banana":
+    slip()`);
+
+  if(i === "feather"){
+    $("d4").classList.remove("locked");
+    $("msg").className = "msg good";
+    $("msg").textContent = "First true condition wins.";
+  } else {
+    $("msg").className = "msg bad";
+    $("msg").textContent = "Not the first match.";
+  }
+};
+
+$("d4_try").onclick = () => {
+  const s = Number($("d4_score").value);
+  showCode("d4_code",
+`if score >= 80:
+    print("Great")
+elif score >= 50:
+    print("OK")
 else:
-    print("Also closed??")  # <-- not allowed!`;
+    print("Try again")`);
 
-      if(fix === "remove_second_else"){
-        unlock(finish);
-        villainStatus.textContent = "defeated (for now)";
-        story(
-          "Door 5 unlocks with a triumphant *click*. The Syntax Slob shrieks: “BUT I WANTED TWO ELSEs!” " +
-          "The labyrinth replies: “No.”"
-        );
-        setMessage("good", "✅",
-          "Correct! In Python, you can only have ONE ELSE, and it must be last. Removing the second ELSE fixes the code."
-        );
-      } else if(fix === "keep_two_else" || fix === "add_more_else"){
-        shakeCard();
-        setMessage("bad", "⛔",
-          "Nope. Python won’t allow two ELSE blocks. The door refuses to accept sloppy spells."
-        );
-      } else {
-        shakeCard();
-        setMessage("bad", "⚠️", "Choose a fix first.");
-      }
-    });
+  $("msg").className = "msg good";
+  $("msg").textContent = "ELSE guarantees a path.";
+};
+</script>
 
-    // Finish
-    $("finish_btn").addEventListener("click", () => {
-      setMessage("good", "📘",
-        "Chapter 2 complete! Next time we can continue the story with new challenges (and later, AND/OR/NOT)."
-      );
-      story(
-        "You step through the doorway into deeper corridors of the Library-Labyrinth. " +
-        "The Sinister Syntax Slobs regroup in the dark, planning their next messy defense..."
-      );
-    });
-
-    // Init
-    resetAll();
-  </script>
 </body>
 </html>
